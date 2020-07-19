@@ -7,7 +7,7 @@
 // @include      *://www.bilibili.com/video/BV*
 // @grant        none
 // ==/UserScript==
- 
+
 (function () {
     'use strict';
     let total_duration = 0
@@ -22,23 +22,26 @@
             container.setAttribute("class", "bilibili-player-video-time")
             container.innerHTML =
                 "<div class=\"bilibili-player-video-time-wrap\" name=\"time_textarea_\" id=\"___total_time_wrapper\">" +
-                "合集进度：" +
+                "合集：" +
                 "<span class=\"bilibili-player-video-time-now\" name=\"time_textarea_\" id=\"___finished_time\">00:00</span>" +
                 "<span class=\"bilibili-player-video-divider\" name=\"time_textarea_\">/</span>" +
                 "<span class=\"bilibili-player-video-time-total\" name=\"time_textarea_\" id=\"___total_time\">00:00</span>" +
                 "&emsp;&emsp;<span id=\"___finished_percent\">00.00%</span>" +
+                "&emsp;<span id=\"zky_target_distance\" style=\"display:none\">目标倒计时：<span>00:00</span></span>" +
                 "</div>"
             // 目标进度设定框
             const time_plan_tools = document.createElement("div")
             time_plan_tools.setAttribute("id", "__time_plan_tools")
-            time_plan_tools.setAttribute("style", "margin-bottom:20px;background-color:rgb(244, 244, 244);height:46px")
+            time_plan_tools.setAttribute("style", "margin-bottom:20px;background-color:rgb(244, 244, 244);height:46px;position:relative")
             let target_str = "00:00:00"
             if (localStorage[`zky_target_${bvid}`] !== undefined) {
                 target_str = format_seconds(localStorage[`zky_target_${bvid}`])
             }
             let current_p = ""
+
             time_plan_tools.innerHTML = "<label for=\"___target_time_input\" id=\"__target_time_input_label\" style=\"font-size:16px;color:#222;padding-left:16px;line-height:46px\" >设定观看目标：</label>" +
-                "<input value=\"" + target_str + "\" id=\"___target_time_input\" name=\"___target_time_input\" style=\"width:50px\"/>&nbsp/&nbsp;<span id=\"___target_time_input_total\">00:00:00</span>"
+                "<input value=\"" + target_str + "\" id=\"___target_time_input\" name=\"___target_time_input\" style=\"width:50px\"/>&nbsp/&nbsp;<span id=\"___target_time_input_total\">00:00:00</span> &emsp;<span style=\"position:absolute;right:14px;margin-top:16px;margin-bottom:16px;cursor:pointer\" id=\"zky_clear_target_btn\">清除</span>"
+
             exec_when_element_exist(function () {
                 const targets = document.querySelectorAll('.list-box > li')
                 const options = {
@@ -66,20 +69,31 @@
                                 if (e.keyCode === 13) {
                                     const t_str = e.target.value
                                     localStorage[`zky_target_${bvid}`] = str_to_seconds(t_str)
+                                    update_()
                                     update_mark()
                                 }
                             })
+                            // 绑定事件：清除目标设定
+                            document.querySelector("#zky_clear_target_btn").addEventListener("click", function () {
+                                localStorage.removeItem(`zky_target_${bvid}`)
+                                document.querySelector("#___target_time_input").value = "00:00:00"
+                                update_mark()
+                                update_()
+                            })
                             update_mark()
-                            function update_mark(){
+                            /**
+                             * 更新列表中的小圆点标记
+                             */
+                            function update_mark() {
                                 let __temp_duration = 0
                                 let __target_p_index = 0
-    
+
                                 localStorage[`zky_target_${bvid}`] && data.pages.some((v, i) => {
                                     __temp_duration += v.duration
                                     __target_p_index = i
                                     return __temp_duration >= localStorage[`zky_target_${bvid}`] ? true : false
                                 })
-    
+
                                 const page_list = [...document.querySelectorAll(".list-box > li")]
                                 const target_p = page_list[__target_p_index]
                                 const progress_p = page_list.slice(current_p, __target_p_index)
@@ -97,7 +111,11 @@
                                     v.classList.add("zky_p_mark")
                                 })
                             }
-
+                            const mb1 = new MutationObserver(function (mr, obs) {
+                                update_()
+                            })
+                            // 监听播放器全屏状态改变
+                            mb1.observe(document.querySelector("#bilibiliPlayer"), options)
                             total_duration = data.duration // 合集总时间（秒）
                             const total_str = format_seconds(total_duration) // 格式化(00:00:00)后的合集总时间
                             // 将合集总时间更新到页面
@@ -114,18 +132,35 @@
             }, ".list-box")
 
 
-
+            // 当窗口大小变化时进行更新
+            window.addEventListener("resize", update_)
 
             /**
              * 更新页面上显示的时间进度
              */
             function update_() {
                 try {
+                    let show_ext_info = document.querySelector("#bilibiliPlayer").className.includes("screen") // 当前是否处于全屏/网页全屏/宽屏模式
+                    document.querySelector(".bilibili-player-video-control").clientWidth > 950 ? show_ext_info = true : show_ext_info = false // 只要播放器宽度超过900 也显示倒计时信息
                     const current_p = get_current_p()
-                    let finished_duration = 0
+                    let finished_duration = 0 // 完成观看的总秒数
+                    const target_time = localStorage[`zky_target_${bvid}`]
+                    let target_distance = null // 距离观看目标的秒数
                     data.pages.slice(0, current_p - 1).forEach(v => finished_duration += v.duration)
                     const [min_, sec_] = document.querySelector(".bilibili-player-video-time-now").textContent.split(":")
                     finished_duration += Number(min_) * 60 + Number(sec_) // 已完成所有视频的秒数
+                    if (target_time && target_time > finished_duration) {
+                        target_distance = target_time - finished_duration
+                        show_ext_info && document.querySelector("#zky_target_distance").removeAttribute("style")
+                        document.querySelector("#zky_target_distance > span").textContent = format_seconds(target_distance)
+                    } else if (!target_time) {
+                        document.querySelector("#zky_target_distance").setAttribute("style", "display:none")
+                    } else {
+                        show_ext_info && document.querySelector("#zky_target_distance").removeAttribute("style")
+                        document.querySelector("#zky_target_distance > span").textContent = "已完成目标"
+                    }
+                    show_ext_info ? document.querySelector("#___finished_percent").removeAttribute("style") : (document.querySelector("#zky_target_distance").setAttribute("style", "display:none") || document.querySelector("#___finished_percent").setAttribute("style", "display:none"))
+
                     const finished_percent = (finished_duration * 100 / total_duration).toFixed(2) // 完成百分比
                     const finished_str = format_seconds(finished_duration)
                     const percent_str = finished_percent < 10 ? "0" + finished_percent + "%" : finished_percent + "%"
@@ -133,7 +168,7 @@
                     document.querySelector("#___finished_percent").textContent = percent_str
 
                 } catch (e) {
-                    console.log(e)
+
                 }
             }
 
