@@ -22,9 +22,9 @@
             container.setAttribute("class", "bilibili-player-video-time")
             container.innerHTML =
                 "<div class=\"bilibili-player-video-time-wrap\" name=\"time_textarea_\" id=\"zky_total_time_wrapper\">" +
-                "合集：" +
+                "&nbsp;合集：" +
                 "<span class=\"bilibili-player-video-time-now\" name=\"time_textarea_\" id=\"zky_finished_time\">00:00</span>" +
-                "<span class=\"bilibili-player-video-divider\" name=\"time_textarea_\">/</span>" +
+                "<span class=\"bilibili-player-video-divider\" name=\"time_textarea_\">&nbsp;/&nbsp;</span>" +
                 "<span class=\"bilibili-player-video-time-total\" name=\"time_textarea_\" id=\"zky_total_time\">00:00</span>" +
                 "&emsp;&emsp;<span id=\"zky_finished_percent\">00.00%</span>" +
                 "&emsp;<span id=\"zky_target_distance\" style=\"display:none\">目标倒计时：<span>00:00</span></span>" +
@@ -37,7 +37,7 @@
             if (localStorage[`zky_target_${bvid}`] !== undefined) {
                 target_str = format_seconds(localStorage[`zky_target_${bvid}`])
             }
-            let current_p = ""
+            let current_p = "" // 当前分P的序列号
 
             time_plan_tools.innerHTML = "<label for=\"zky_target_time_input\" id=\"zky_target_time_input_label\" style=\"font-size:16px;color:#222;padding-left:16px;line-height:46px\" >设定观看目标：</label>" +
                 "<input value=\"" + target_str + "\" id=\"zky_target_time_input\" name=\"zky_target_time_input\" style=\"width:50px\"/>&nbsp/&nbsp;<span id=\"zky_target_time_input_total\">00:00:00</span> &emsp;<span style=\"position:absolute;right:14px;margin-top:16px;margin-bottom:16px;cursor:pointer\" id=\"zky_clear_target_btn\">清除</span>"
@@ -151,18 +151,23 @@
                     data.pages.slice(0, current_p - 1).forEach(v => finished_duration += v.duration)
                     const [min_, sec_] = document.querySelector(".bilibili-player-video-time-now").textContent.split(":")
                     finished_duration += Number(min_) * 60 + Number(sec_) // 已完成所有视频的秒数
-
+                    // 如果设定了目标，且当前未完成目标就显示目标进度信息
                     if (target_time && target_time > finished_duration) {
                         target_distance = target_time - finished_duration
                         show_ext_info && document.querySelector("#zky_target_distance").removeAttribute("style")
                         document.querySelector("#zky_target_distance > span").textContent = format_seconds(target_distance)
-                    } else if (!target_time) {
+                    } 
+                    // 如果没有设定目标，就隐藏进度信息
+                    else if (!target_time) {
                         document.querySelector("#zky_target_distance").setAttribute("style", "display:none")
-                    } else {
+                    } 
+                    // 设定了目标且目标已经完成，显示“已完成目标”
+                    else {
                         show_ext_info && document.querySelector("#zky_target_distance").removeAttribute("style")
                         document.querySelector("#zky_target_distance > span").textContent = "已完成目标"
                     }
                     show_ext_info ? document.querySelector("#zky_finished_percent").removeAttribute("style") : (document.querySelector("#zky_target_distance").setAttribute("style", "display:none") || document.querySelector("#zky_finished_percent").setAttribute("style", "display:none"))
+                    // 设定目标分P的进度条提示
                     if(target_p === current_p){
                         const ctrl_width = document.querySelector(".bui-bar-wrap").offsetWidth
                         document.querySelector("#zky_controller_progress_mark").style.transform = `translateX(${ctrl_width * ((target_time - (finished_duration - Number(min_) * 60 - Number(sec_)))/data.pages[current_p-1].duration )}px)`
@@ -174,14 +179,13 @@
                     document.querySelector("#zky_finished_percent").textContent = percent_str
 
                 } catch (e) {
-                    console.log(e)
+                    // console.log(e)
                 }
             }
 
 
         })
     }
-    // 提示小圆点
     // 提示小圆点
     add_new_style(".zky_p_mark > a > span:before{content:\"\";position:relative;top:50%;transform:translateY(-50%);right:0px;width: 5px;height: 5px;box-sizing: border-box;color: white;text-align: center;border-radius: 5px;display: inline-block;}")
 
@@ -192,6 +196,11 @@
         "background: #FADB14" +
         "}")
 
+    /**
+     * 获取观看目标的分P序列号
+     * @param {string} bvid 
+     * @param {any[]} data 
+     */
     function get_target_p(bvid,data) {
         let target_p = 0
         let __temp_duration = 0
@@ -279,5 +288,4 @@
         }
         styleElement.appendChild(document.createTextNode(newStyle));
     }
-    // Your code here...
 })();
