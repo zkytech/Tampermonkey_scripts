@@ -88,14 +88,17 @@
 
                                 const target_p = get_target_p(bvid,data) // 观看目标的终点分P的序列号
 
-                                const page_list = [...document.querySelectorAll(".list-box > li")]
+                                const page_list = [...document.querySelectorAll(".list-box > li > a")]
                                 const target_page = page_list[target_p - 1]
                                 const progress_p = page_list.slice(current_p, target_p-1)
                                 // 首先清除所有标记
-                                page_list.forEach(v => {
-                                    v.classList.remove("zky_target_p")
-                                    v.classList.remove("zky_progress_p")
-                                    v.classList.remove("zky_p_mark")
+                                page_list.forEach((v,i) => {
+                                    if (i < current_p || i >= target_p){
+                                        v.classList.remove("zky_target_p")
+                                        v.classList.remove("zky_progress_p")
+                                        v.classList.remove("zky_p_mark")
+                                    }
+
                                 })
                                 // 标记目标分P
                                 localStorage[`zky_target_${bvid}`] && (target_page.classList.add("zky_target_p") || target_page.classList.add("zky_p_mark"))
@@ -187,12 +190,12 @@
         })
     }
     // 提示小圆点
-    add_new_style(".zky_p_mark > a > span:before{content:\"\";position:relative;top:50%;transform:translateY(-50%);right:0px;width: 5px;height: 5px;box-sizing: border-box;color: white;text-align: center;border-radius: 5px;display: inline-block;}")
+    add_new_style(".zky_p_mark >  span:before{content:\"\";position:relative;top:50%;transform:translateY(-50%);right:0px;width: 5px;height: 5px;box-sizing: border-box;color: white;text-align: center;border-radius: 5px;display: inline-block;}")
 
-    add_new_style(".zky_target_p > a > span:before {" +
+    add_new_style(".zky_target_p > span:before {" +
         "background: #52C41A " +
         "}")
-    add_new_style(".zky_progress_p > a > span:before {" +
+    add_new_style(".zky_progress_p > span:before {" +
         "background: #FADB14" +
         "}")
 
