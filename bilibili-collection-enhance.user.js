@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bilibili合集观看进度
 // @namespace    https://github.com/zkytech/Tampermonkey_scripts
-// @version      0.6.1
+// @version      0.6.2
 // @description  显示合集整体观看进度，方便掌控学习进度，合理安排学习时间。
 // @author       You
 // @include      *://www.bilibili.com/video/BV*
