@@ -145,8 +145,10 @@
             function update_() {
                 try {
                     const target_p = get_target_p(bvid,data) // 观看目标的终点分P的序列号
-                    let show_ext_info = document.querySelector("#bilibiliPlayer").className.includes("screen") // 当前是否处于全屏/网页全屏/宽屏模式
-                    document.querySelector(".bilibili-player-video-control").clientWidth > 950 ? show_ext_info = true : show_ext_info = false // 只要播放器宽度超过900 也显示倒计时信息
+                    // 当前是否处于全屏/网页全屏/宽屏模式
+                    // let show_ext_info = document.querySelector("#bilibiliPlayer").className.includes("screen")
+                    let show_ext_info = false 
+                    document.querySelector(".bilibili-player-video-control").clientWidth > 2000 ? show_ext_info = true : show_ext_info = false // 只要播放器宽度超过900 也显示倒计时信息
                     const current_p = get_current_p()
                     let finished_duration = 0 // 完成观看的总秒数
                     const target_time = localStorage[`zky_target_${bvid}`]
