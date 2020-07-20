@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bilibili合集观看进度
 // @namespace    https://github.com/zkytech/Tampermonkey_scripts
-// @version      0.6.5
+// @version      0.6.6
 // @description  显示合集整体观看进度，方便掌控学习进度，合理安排学习时间。
 // @author       zkytech
 // @include      *://www.bilibili.com/video/BV*
@@ -248,7 +248,7 @@
      */
     function str_to_seconds(time_str) {
         const time_nums = time_str.split(":").map(val => Number(val)).reverse()
-        return time_nums[0] + time_nums[1] * 60 + time_nums[2] ? time_nums[2] * 60 * 60 : 0
+        return time_nums[0] + time_nums[1] * 60 + (time_nums[2] ? time_nums[2] * 60 * 60 : 0)
     }
 
     /**
