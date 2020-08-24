@@ -1,7 +1,11 @@
 // ==UserScript==
 // @name         Bilibili合集观看进度
 // @namespace    https://github.com/zkytech/Tampermonkey_scripts
+<<<<<<< HEAD
 // @version      0.6.5
+=======
+// @version      0.6.7
+>>>>>>> a98978fd157910269715fa4830f39d9f813e0812
 // @description  显示合集整体观看进度，方便掌控学习进度，合理安排学习时间。
 // @author       zkytech
 // @include      *://www.bilibili.com/video/BV*
@@ -240,9 +244,19 @@
              */
             function update_() {
                 try {
+<<<<<<< HEAD
                     const target_p = get_target_p(bvid, data) // 观看目标的终点分P的序列号
                     let show_ext_info = document.querySelector("#bilibiliPlayer").className.includes("screen") // 当前是否处于全屏/网页全屏/宽屏模式
                     document.querySelector(".bilibili-player-video-control").clientWidth > 950 ? show_ext_info = true : show_ext_info = false // 只要播放器宽度超过900 也显示倒计时信息
+=======
+                    const target_p = get_target_p(bvid,data) // 观看目标的终点分P的序列号
+                    // 当前是否处于全屏/网页全屏/宽屏模式
+                    // let show_ext_info = document.querySelector("#bilibiliPlayer").className.includes("screen")
+                    const video_width = document.querySelector(".bilibili-player-video-control").clientWidth
+                    document.querySelector("#bilibiliPlayer").className.includes("screen") && video_width < 2000 && document.querySelector(".bilibili-player-video-control-bottom-center").setAttribute("style","display:none");  
+                    let show_ext_info = false 
+                    video_width > 1200 ? show_ext_info = true : show_ext_info = false // 只要播放器宽度超过900 也显示倒计时信息
+>>>>>>> a98978fd157910269715fa4830f39d9f813e0812
                     const current_p = get_current_p()
                     let finished_duration = 0 // 完成观看的总秒数
                     const target_time = localStorage[`zky_target_${bvid}`]
@@ -342,7 +356,7 @@
      */
     function str_to_seconds(time_str) {
         const time_nums = time_str.split(":").map(val => Number(val)).reverse()
-        return time_nums[0] + time_nums[1] * 60 + time_nums[2] ? time_nums[2] * 60 * 60 : 0
+        return time_nums[0] + time_nums[1] * 60 + (time_nums[2] ? time_nums[2] * 60 * 60 : 0)
     }
 
     /**
