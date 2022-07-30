@@ -158,7 +158,7 @@
                     exec_when_element_exist(
                         function () {
                             // 将自定义组件添加到html
-                            document.querySelector(".r-con").insertBefore(time_plan_tools, document.querySelector("#danmukuBox"))
+                            document.querySelector(".right-container").insertBefore(time_plan_tools, document.querySelector("#danmukuBox"))
                             document.querySelector(".bilibili-player-video-control-bottom-left").appendChild(container)
                             // 绑定事件：设定目标时间
                             document.querySelector("#zky_target_time_input").addEventListener("keydown", function (e) {
