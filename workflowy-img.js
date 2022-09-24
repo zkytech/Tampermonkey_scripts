@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         workflowy-img
 // @namespace    https://github.com/zkytech/Tampermonkey_scripts
-// @version      0.0.1
+// @version      0.0.2
 // @description  Automatically render pictures in workflowy
 // @author       zkytech
 // @include      *://workflowy.com*
@@ -10,7 +10,7 @@
 
 (function () {
   "use strict";
-  const regexpImgUrl = /http[s]?:\/\/.*\.[jpg|png|ico|gif|jpeg](\?.*)?/i;
+  const regexpImgUrl = /http[s]?:\/\/.*\.(jpg|png|ico|gif|jpeg)(\?.*)?/i;
   function refreshImgs() {
     // make sure all img url exists in contentLink
     document
