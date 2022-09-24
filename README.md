@@ -1,9 +1,17 @@
 # Tampermonkey_scripts
+[toc]
+
 自己写的一些油猴脚本
 
-## Bilibili增强--合集观看进度显示
-
 > 使用前必须先在浏览器上安装[Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?utm_source=chrome-ntp-icon)插件
+
+## 1.Workflowy图片链接渲染
+
+使用方法，将图片链接粘贴到workflowy即可。
+![](preview/Workflowy图片链接渲染插件.png)
+
+## 2.Bilibili增强--合集观看进度显示
+
 
 [点击安装脚本](https://github.com/zkytech/Tampermonkey_scripts/raw/master/bilibili-collection-enhance.user.js)
 
