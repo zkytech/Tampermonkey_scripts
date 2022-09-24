@@ -8,7 +8,8 @@
 ## 1.Workflowy图片链接渲染
 
 使用方法，将图片链接粘贴到workflowy即可。
-![](preview/Workflowy图片链接渲染插件.png)
+
+![功能预览](preview/Workflowy图片链接渲染插件.png)
 
 ## 2.Bilibili增强--合集观看进度显示
 

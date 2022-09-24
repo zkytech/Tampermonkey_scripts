@@ -2,7 +2,7 @@
 // @name         workflowy-img
 // @namespace    https://github.com/zkytech/Tampermonkey_scripts
 // @version      0.0.1
-// @description  Auto render image url in workflowy
+// @description  Automatically render pictures in workflowy
 // @author       zkytech
 // @include      *://workflowy.com*
 // @grant        none1
